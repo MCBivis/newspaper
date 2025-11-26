@@ -1,6 +1,5 @@
 services:
   minio:
-    # Нужно использовать именно эту версию minio, в ней файлы хранятся как обычные файлы в ОС
     image: docker.io/bitnami/minio:2022.5.26
     restart: always
     ports:
