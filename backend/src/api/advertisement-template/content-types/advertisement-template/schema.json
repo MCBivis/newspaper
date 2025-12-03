@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "advertisement_templates",
+  "info": {
+    "singularName": "advertisement-template",
+    "pluralName": "advertisement-templates",
+    "displayName": "AdvertisementTemplate",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "widthInColumns": {
+      "type": "integer",
+      "required": true
+    },
+    "heightInRows": {
+      "type": "integer",
+      "required": true
+    },
+    "advertisments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::advertisment.advertisment",
+      "mappedBy": "ad_template"
+    }
+  }
+}

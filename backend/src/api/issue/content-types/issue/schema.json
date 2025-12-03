@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "issues",
+  "info": {
+    "singularName": "issue",
+    "pluralName": "issues",
+    "displayName": "Issue",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "PublishDate": {
+      "type": "datetime"
+    },
+    "newspaper": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::newspaper.newspaper",
+      "inversedBy": "issues"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "draft",
+        "in_progress",
+        "review",
+        "ready",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "issueData": {
+      "type": "json"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::article.article",
+      "mappedBy": "issue"
+    },
+    "photos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::photo.photo",
+      "mappedBy": "issue"
+    }
+  }
+}

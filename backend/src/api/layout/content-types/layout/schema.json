@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "layouts",
+  "info": {
+    "singularName": "layout",
+    "pluralName": "layouts",
+    "displayName": "Layout",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "editorJSData": {
+      "type": "json"
+    },
+    "columnCount": {
+      "type": "integer"
+    },
+    "pageHeight": {
+      "type": "integer"
+    },
+    "availableTextStyles": {
+      "type": "json"
+    },
+    "pageWidth": {
+      "type": "integer"
+    },
+    "horizontalFieldsWidth": {
+      "type": "integer"
+    },
+    "verticalFieldsHeight": {
+      "type": "integer"
+    },
+    "fontFamily": {
+      "type": "string"
+    },
+    "pagesCount": {
+      "type": "integer"
+    }
+  }
+}

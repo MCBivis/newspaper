@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Article",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "photos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::photo.photo",
+      "mappedBy": "article"
+    },
+    "text": {
+      "type": "text"
+    },
+    "issue": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::issue.issue",
+      "inversedBy": "articles"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+.comma {
+  position: relative;
+
+  &::after {
+    content: ', ';
+  }
+
+  &:last-of-type {
+    &::after {
+      content: '';
+    }
+  }
+}
+
+/* Современные стили для приложения */
+.ant-layout {
+  min-height: 100vh;
+}
+
+.ant-layout-sider {
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.ant-menu {
+  border-right: none !important;
+}
+
+.ant-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.ant-btn {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.ant-btn-primary {
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+.ant-btn-primary:hover {
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+  transform: translateY(-1px);
+}

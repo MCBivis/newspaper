@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "advertisments",
+  "info": {
+    "singularName": "advertisment",
+    "pluralName": "advertisments",
+    "displayName": "Advertisment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "DateFrom": {
+      "type": "datetime"
+    },
+    "DateTo": {
+      "type": "datetime"
+    },
+    "Header": {
+      "type": "string"
+    },
+    "ad_template": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::advertisement-template.advertisement-template",
+      "inversedBy": "advertisments"
+    },
+    "photo": {
+      "allowedTypes": ["images"],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}
