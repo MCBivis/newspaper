@@ -20,63 +20,91 @@ import {
   FileDoneOutlined,
   FileSearchOutlined,
   ProfileOutlined,
+  BookOutlined,
+  CalendarOutlined,
+  EditOutlined,
+  CameraOutlined,
+  LayoutOutlined,
+  DollarOutlined,
+  FileProtectOutlined,
 } from "@ant-design/icons";
 
 const allResources = [
   {
-    name: "layouts",
-    list: "/layouts",
-    meta: {
-      label: "Layouts",
-      icon: <AppstoreOutlined />,
-    },
-  },
-  {
-    name: "photos",
-    list: "/photos",
-    meta: {
-      label: "Photos",
-      icon: <PictureOutlined />,
-    },
-  },
-  {
     name: "newspapers",
     list: "/newspapers",
+    create: '/newspapers/create',
+    edit: '/newspapers/edit/:id',
+    show: '/newspapers/show/:id',
     meta: {
-      label: "Newspapers",
-      icon: <ContainerOutlined />,
-    },
-  },
-  {
-    name: "articles",
-    list: "/articles",
-    meta: {
-      label: "Articles",
-      icon: <ProfileOutlined />,
-    },
-  },
-  {
-    name: "advertisments",
-    list: "/advertisments",
-    meta: {
-      label: "Advertisements",
-      icon: <FileDoneOutlined />,
-    },
-  },
-  {
-    name: "advertisement-templates",
-    list: "/advertisement-templates",
-    meta: {
-      label: "Advertisement Templates",
-      icon: <FileTextOutlined />,
+      label: "Газеты",
+      icon: <BookOutlined />,
     },
   },
   {
     name: "issues",
     list: "/issues",
+    create: '/issues/create',
+    edit: '/issues/edit/:id',
+    show: '/issues/show/:id',
     meta: {
-      label: "Issues",
-      icon: <FileSearchOutlined />,
+      label: "Выпуски",
+      icon: <CalendarOutlined />,
+    },
+  },
+  {
+    name: "articles",
+    list: "/articles",
+    create: '/articles/create',
+    edit: '/articles/edit/:id',
+    show: '/articles/show/:id',
+    meta: {
+      label: "Статьи",
+      icon: <EditOutlined />,
+    },
+  },
+  {
+    name: "photos",
+    list: "/photos",
+    create: '/photos/create',
+    edit: '/photos/edit/:id',
+    show: '/photos/show/:id',
+    meta: {
+      label: "Фотографии",
+      icon: <CameraOutlined />,
+    },
+  },
+  {
+    name: "layouts",
+    list: "/layouts",
+    create: '/layouts/create',
+    edit: '/layouts/edit/:id',
+    show: '/layouts/show/:id',
+    meta: {
+      label: "Макеты",
+      icon: <LayoutOutlined />,
+    },
+  },
+  {
+    name: "advertisments",
+    list: "/advertisments",
+    create: '/advertisments/create',
+    edit: '/advertisments/edit/:id',
+    show: '/advertisments/show/:id',
+    meta: {
+      label: "Реклама",
+      icon: <DollarOutlined />,
+    },
+  },
+  {
+    name: "advertisement-templates",
+    list: "/advertisement-templates",
+    create: "/advertisement-templates/create",
+    edit: "/advertisement-templates/edit/:id",
+    show: "/advertisement-templates/show/:id",
+    meta: {
+      label: "Шаблоны рекламы",
+      icon: <FileProtectOutlined />,
     },
   },
 ];

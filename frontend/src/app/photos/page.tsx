@@ -5,6 +5,8 @@ import {
   DeleteButton,
   List,
   useTable,
+  ShowButton,
+  EditButton,
 } from "@refinedev/antd";
 import { type BaseRecord } from "@refinedev/core";
 import MDEditor from "@uiw/react-md-editor";
@@ -29,8 +31,8 @@ type ArticleType = {
   text: string;
 };
 
-export default function BlogPostList() {
-  const { tableProps, filters } = useTable<
+export default function PhotoList() {
+  const { tableProps} = useTable<
     {
       name: string;
       width: number;
@@ -55,12 +57,16 @@ export default function BlogPostList() {
   });
 
   return (
-    <List>
+    <List
+      createButtonProps={{
+        children: "Создать фотографию",
+      }}
+    >
       <Table {...tableProps} rowKey="id">
         <Table.Column dataIndex="id" title={"ID"} />
-        <Table.Column dataIndex="name" title={"Name"} />
+        <Table.Column dataIndex="name" title={"Название"} />
         <Table.Column
-          title={"Issue"}
+          title={"Выпуск"}
           dataIndex="issue"
           render={(_, record: BaseRecord) => {
             return record.issue?.name || "-";
@@ -68,7 +74,7 @@ export default function BlogPostList() {
         />
         <Table.Column 
           dataIndex="width" 
-          title={"Width"} 
+          title={"Ширина"} 
           render={(value) => {
             if (value === null || value === undefined || value === '') return '-';
             return `${value}px`;
@@ -76,7 +82,7 @@ export default function BlogPostList() {
         />
         <Table.Column 
           dataIndex="height" 
-          title={"Height"} 
+          title={"Высота"} 
           render={(value) => {
             if (value === null || value === undefined || value === '') return '-';
             return `${value}px`;
@@ -84,7 +90,7 @@ export default function BlogPostList() {
         />
         <Table.Column
           dataIndex="photo"
-          title={"Photo"}
+          title={"Фото"}
           render={(value: any) =>
             value ? (
               <UploadImage
@@ -103,7 +109,7 @@ export default function BlogPostList() {
           }
         />
         <Table.Column
-          title={"Article"}
+          title={"Статья"}
           dataIndex="article"
           render={(_, record: BaseRecord) => {
             const article = record.article;
@@ -136,11 +142,13 @@ export default function BlogPostList() {
           }}
         />
         <Table.Column
-          title={"Actions"}
+          title={"Действия"}
           dataIndex="actions"
           render={(_, record: BaseRecord) => (
             <Space>
-              <DeleteButton hideText size="small" recordItemId={record.id} />
+                <ShowButton hideText size="small" recordItemId={record.id} />
+                <EditButton hideText size="small" recordItemId={record.id} />
+                <DeleteButton hideText size="small" recordItemId={record.id} />
             </Space>
           )}
         />

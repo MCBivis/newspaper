@@ -3,8 +3,11 @@
 import {
   DeleteButton,
   useTable,
+  EditButton,
+  ShowButton,
 } from "@refinedev/antd";
-import { Card, Col, Row, Space } from "antd";
+import { Card, Col, Row, Space, Button } from "antd";
+import { useRouter } from "next/navigation";
 
 const relationsQuery = {
   populate: {
@@ -36,13 +39,13 @@ type IssueType = {
   PublishDate: Date;
 };
 
-const STRAPI_BASE_URL = "http://localhost:1338";
+const STRAPI_BASE_URL = "http://localhost:1337";
 
 export default function NewspaperList() {
   const { tableProps } = useTable<{
     id: number | string;
     name: string;
-    cover: string; // cover is a URL to the image
+    cover: string;
     layout: LayoutType;
     fontFamily: string;
     height: string;
@@ -60,8 +63,7 @@ export default function NewspaperList() {
     },
   });
 
-  // Assuming this is the base URL for your Strapi media (adjust this to your actual base URL)
-  // or your production URL
+  const router = useRouter();
 
   return (
     <div style={{ padding: '24px', background: 'transparent' }}>
@@ -72,8 +74,16 @@ export default function NewspaperList() {
         color: '#1a1a1a',
         letterSpacing: '-0.5px'
       }}>
-        Newspapers
+        Газеты
       </h1>
+      <Space style={{ marginBottom: 16 }}>
+        <Button
+            type="primary"
+            onClick={() => router.push("/newspapers/create")}
+        >
+          Создать газету
+        </Button>
+      </Space>
       <Row gutter={[24, 24]}>
         {tableProps?.dataSource?.map((newspaper: any) => (
           <Col span={8} key={newspaper.id}>
@@ -118,7 +128,7 @@ export default function NewspaperList() {
                       backgroundColor: "#f0f0f0",
                     }}
                   >
-                    No image
+                    Нет изображения
                   </div>
                 )
               } // Load the image
@@ -136,9 +146,22 @@ export default function NewspaperList() {
                 color: '#64748b',
                 fontSize: '14px'
               }}>
-                Issues: {newspaper.issues.length}
+                Выпусков: {newspaper.issues.length}
               </p>
               <Space>
+                <EditButton
+                    hideText
+                    size="small"
+                    recordItemId={newspaper.id}
+                />
+                <ShowButton
+                    hideText
+                    size="small"
+                    recordItemId={newspaper.id}
+                    onClick={() =>
+                        router.push(`/issues?newspaperId=${newspaper.id}`)
+                    }
+                />
                 <DeleteButton
                   hideText
                   size="small"

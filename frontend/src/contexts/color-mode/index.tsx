@@ -4,6 +4,7 @@
 import CustomLightTheme from '@styles/theme/CustomLightTheme';
 import CustomDarkTheme from '@styles/theme/CustomDarkTheme';
 import { App as AntdApp, ConfigProvider, theme } from 'antd';
+import ruRU from 'antd/locale/ru_RU';
 import Cookies from 'js-cookie';
 import React, {
   PropsWithChildren,
@@ -72,6 +73,7 @@ export const ColorModeContextProvider: React.FC<
     >
       <ConfigProvider
         // you can change the theme colors here. example: ...RefineThemes.Magenta,
+        locale={ruRU}
         theme={{
           ...customTheme,
           algorithm: mode === 'light' ? defaultAlgorithm : darkAlgorithm,
