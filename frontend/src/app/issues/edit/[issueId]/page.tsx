@@ -24,6 +24,7 @@ import weekday from "dayjs/plugin/weekday";
 dayjs.extend(weekday);
 dayjs.extend(localeData);
 dayjs.extend(advancedFormat);
+import { RequireRole } from "@components/auth/RequireRole";
 
 export default function IssueEdit() {
     console.log("BlogPostEdit component loaded");
@@ -161,127 +162,129 @@ export default function IssueEdit() {
     }
 
     return (
-        <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
-            <Form
-                {...formProps}
-                form={form}
-                layout="vertical"
-                initialValues={initialValues}
-                onFinish={(values: any) => {
-                    console.log("Form values before submit:", values);
+        <RequireRole allowedRoles={["SuperAdmin", "Editor"]}>
+            <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
+                <Form
+                    {...formProps}
+                    form={form}
+                    layout="vertical"
+                    initialValues={initialValues}
+                    onFinish={(values: any) => {
+                        console.log("Form values before submit:", values);
 
-                    // Форматируем данные для отправки
-                    const formattedValues = {
-                        ...values,
-                        newspaper: values.newspaper?.id || values.newspaper,
-                        PublishDate: values.PublishDate
-                            ? values.PublishDate.toISOString()
-                            : null,
-                        cover: values.cover?.id || values.cover,
-                    };
+                        // Форматируем данные для отправки
+                        const formattedValues = {
+                            ...values,
+                            newspaper: values.newspaper?.id || values.newspaper,
+                            PublishDate: values.PublishDate
+                                ? values.PublishDate.toISOString()
+                                : null,
+                            cover: values.cover?.id || values.cover,
+                        };
 
-                    console.log("Formatted values:", formattedValues);
-                    formProps.onFinish?.(formattedValues);
-                }}
-            >
-                <Form.Item
-                    label={"Название"}
-                    name={["name"]}
-                    rules={[
-                        {
-                            required: true,
-                            message: "Введите название выпуска",
-                        },
-                    ]}
+                        console.log("Formatted values:", formattedValues);
+                        formProps.onFinish?.(formattedValues);
+                    }}
                 >
-                    <Input placeholder="Например: Январь 2025" />
-                </Form.Item>
-                <Form.Item
-                    label={"Статус"}
-                    name={["status"]}
-                    rules={[
-                        {
-                            required: true,
-                            message: "Выберите статус",
-                        },
-                    ]}
-                >
-                    <Select placeholder="Выберите статус">
-                        <Select.Option value="in_progress">В работе</Select.Option>
-                        <Select.Option value="published">Опубликован</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    label={"Дата публикации"}
-                    name={["PublishDate"]}
-                    rules={[
-                        {
-                            required: true,
-                            message: "Выберите дату",
-                        },
-                    ]}
-                >
-                    <DatePicker
-                        placeholder="Выберите дату"
-                        style={{ width: '100%' }}
-                        format="DD.MM.YYYY"
-                    />
-                </Form.Item>
-                <Form.Item
-                    label={"Газета"}
-                    name={["newspaper", "id"]}
-                    rules={[
-                        {
-                            required: true,
-                            message: "Выберите газету",
-                        },
-                    ]}
-                >
-                    <Select {...newspaperSelectProps} placeholder="Выберите газету" />
-                </Form.Item>
-                <Space direction="vertical">
                     <Form.Item
-                        label={<Typography.Text strong>Обложка выпуска</Typography.Text>}
-                        rules={[{ required: true, message: "Загрузите обложку" }]}
-                        style={{ margin: 0 }}
-                        name="cover"
+                        label={"Название"}
+                        name={["name"]}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Введите название выпуска",
+                            },
+                        ]}
                     >
-                        <UploadImage
-                            value={photo}
-                            index={0}
-                            accepts=".png,.jpg,.jpeg"
-                            onChange={(value) => {
-                                setPhoto(value);
-                                form?.setFieldValue("cover", value);
-                            }}
+                        <Input placeholder="Например: Январь 2025" />
+                    </Form.Item>
+                    <Form.Item
+                        label={"Статус"}
+                        name={["status"]}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Выберите статус",
+                            },
+                        ]}
+                    >
+                        <Select placeholder="Выберите статус">
+                            <Select.Option value="in_progress">В работе</Select.Option>
+                            <Select.Option value="published">Опубликован</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label={"Дата публикации"}
+                        name={["PublishDate"]}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Выберите дату",
+                            },
+                        ]}
+                    >
+                        <DatePicker
+                            placeholder="Выберите дату"
+                            style={{ width: "100%" }}
+                            format="DD.MM.YYYY"
                         />
                     </Form.Item>
-                    {photo && (
-                        <Popconfirm
-                            title="Удалить вложение"
-                            description="Уверены, что хотите удалить вложение?"
-                            onConfirm={() => {
-                                form?.setFieldValue("cover", null);
-                                setPhoto(null);
-                            }}
-                            okText="Да"
-                            cancelText="Нет"
+                    <Form.Item
+                        label={"Газета"}
+                        name={["newspaper", "id"]}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Выберите газету",
+                            },
+                        ]}
+                    >
+                        <Select {...newspaperSelectProps} placeholder="Выберите газету" />
+                    </Form.Item>
+                    <Space direction="vertical">
+                        <Form.Item
+                            label={<Typography.Text strong>Обложка выпуска</Typography.Text>}
+                            rules={[{ required: true, message: "Загрузите обложку" }]}
+                            style={{ margin: 0 }}
+                            name="cover"
                         >
-                            <Tooltip placement="top" title={"Удалить"}>
-                                <Button
-                                    style={{ width: 120 }}
-                                    size="small"
-                                    block
-                                    danger
-                                    icon={<DeleteOutlined />}
-                                >
-                                    Удалить
-                                </Button>
-                            </Tooltip>
-                        </Popconfirm>
-                    )}
-                </Space>
-            </Form>
-        </Edit>
+                            <UploadImage
+                                value={photo}
+                                index={0}
+                                accepts=".png,.jpg,.jpeg"
+                                onChange={(value) => {
+                                    setPhoto(value);
+                                    form?.setFieldValue("cover", value);
+                                }}
+                            />
+                        </Form.Item>
+                        {photo && (
+                            <Popconfirm
+                                title="Удалить вложение"
+                                description="Уверены, что хотите удалить вложение?"
+                                onConfirm={() => {
+                                    form?.setFieldValue("cover", null);
+                                    setPhoto(null);
+                                }}
+                                okText="Да"
+                                cancelText="Нет"
+                            >
+                                <Tooltip placement="top" title={"Удалить"}>
+                                    <Button
+                                        style={{ width: 120 }}
+                                        size="small"
+                                        block
+                                        danger
+                                        icon={<DeleteOutlined />}
+                                    >
+                                        Удалить
+                                    </Button>
+                                </Tooltip>
+                            </Popconfirm>
+                        )}
+                    </Space>
+                </Form>
+            </Edit>
+        </RequireRole>
     );
 }

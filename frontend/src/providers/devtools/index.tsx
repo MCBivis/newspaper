@@ -1,16 +1,9 @@
 "use client";
 
-import {
-  DevtoolsPanel,
-  DevtoolsProvider as DevtoolsProviderBase,
-} from "@refinedev/devtools";
 import React from "react";
 
 export const DevtoolsProvider = (props: React.PropsWithChildren) => {
-  return (
-    <DevtoolsProviderBase>
-      {props.children}
-      <DevtoolsPanel />
-    </DevtoolsProviderBase>
-  );
+  // Disable refine devtools in this project setup to avoid noisy
+  // local requests like `/:port/api/.auth/sessions/whoami`.
+  return <>{props.children}</>;
 };

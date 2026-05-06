@@ -6,108 +6,55 @@ import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider from "@refinedev/nextjs-router";
 import React, {
+  useEffect,
+  useState,
   Suspense,
 } from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ColorModeContextProvider } from "@contexts/color-mode";
 import { dataProvider } from "@providers/data-provider";
+import { authProvider } from "@providers/auth-provider";
+import Cookies from "js-cookie";
+import { TOKEN_KEY } from "@utility/constants";
+import { usePathname, useRouter } from "next/navigation";
 import "@refinedev/antd/dist/reset.css";
-import {
-  AppstoreOutlined,
-  PictureOutlined,
-  ContainerOutlined,
-  FileTextOutlined,
-  FileDoneOutlined,
-  FileSearchOutlined,
-  ProfileOutlined,
-  BookOutlined,
-  CalendarOutlined,
-  EditOutlined,
-  CameraOutlined,
-  LayoutOutlined,
-  DollarOutlined,
-  FileProtectOutlined,
-} from "@ant-design/icons";
+import { resources } from "@/app/resources";
 
-const allResources = [
-  {
-    name: "newspapers",
-    list: "/newspapers",
-    create: '/newspapers/create',
-    edit: '/newspapers/edit/:id',
-    show: '/newspapers/show/:id',
-    meta: {
-      label: "Газеты",
-      icon: <BookOutlined />,
-    },
-  },
-  {
-    name: "issues",
-    list: "/issues",
-    create: '/issues/create',
-    edit: '/issues/edit/:id',
-    show: '/issues/show/:id',
-    meta: {
-      label: "Выпуски",
-      icon: <CalendarOutlined />,
-    },
-  },
-  {
-    name: "articles",
-    list: "/articles",
-    create: '/articles/create',
-    edit: '/articles/edit/:id',
-    show: '/articles/show/:id',
-    meta: {
-      label: "Статьи",
-      icon: <EditOutlined />,
-    },
-  },
-  {
-    name: "photos",
-    list: "/photos",
-    create: '/photos/create',
-    edit: '/photos/edit/:id',
-    show: '/photos/show/:id',
-    meta: {
-      label: "Фотографии",
-      icon: <CameraOutlined />,
-    },
-  },
-  {
-    name: "layouts",
-    list: "/layouts",
-    create: '/layouts/create',
-    edit: '/layouts/edit/:id',
-    show: '/layouts/show/:id',
-    meta: {
-      label: "Макеты",
-      icon: <LayoutOutlined />,
-    },
-  },
-  {
-    name: "advertisments",
-    list: "/advertisments",
-    create: '/advertisments/create',
-    edit: '/advertisments/edit/:id',
-    show: '/advertisments/show/:id',
-    meta: {
-      label: "Реклама",
-      icon: <DollarOutlined />,
-    },
-  },
-  {
-    name: "advertisement-templates",
-    list: "/advertisement-templates",
-    create: "/advertisement-templates/create",
-    edit: "/advertisement-templates/edit/:id",
-    show: "/advertisement-templates/show/:id",
-    meta: {
-      label: "Шаблоны рекламы",
-      icon: <FileProtectOutlined />,
-    },
-  },
-];
+function ClientAuthGate({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const publicRoutes = ["/login", "/unauthorized"];
+    const isPublic = publicRoutes.some((route) => pathname?.startsWith(route));
+    if (isPublic) return;
+
+    const token = Cookies.get(TOKEN_KEY);
+    if (!token) {
+      const from = pathname || "/";
+      router.replace(`/login?from=${encodeURIComponent(from)}`);
+    }
+  }, [mounted, pathname, router]);
+
+  const publicRoutes = ["/login", "/unauthorized"];
+  const isPublic = publicRoutes.some((route) => pathname?.startsWith(route));
+  if (isPublic) return <>{children}</>;
+
+  // Hydration-safe: render nothing until mounted,
+  // then decide based on cookie token.
+  if (!mounted) return null;
+
+  const hasToken = Boolean(Cookies.get(TOKEN_KEY));
+  if (!hasToken) return null;
+
+  return <>{children}</>;
+}
 
 export default function RefineApp({
   children,
@@ -125,8 +72,9 @@ export default function RefineApp({
             <Refine
               routerProvider={routerProvider}
               dataProvider={dataProvider}
+              authProvider={authProvider}
               notificationProvider={useNotificationProvider}
-              resources={allResources}
+              resources={resources as any}
               options={{
                 syncWithLocation: true,
                 warnWhenUnsavedChanges: true,
@@ -138,7 +86,7 @@ export default function RefineApp({
               }}
             >
               <Suspense fallback={<div>Loading content…</div>}>
-                {children}
+                <ClientAuthGate>{children}</ClientAuthGate>
               </Suspense>
               <RefineKbar />
             </Refine>

@@ -3,6 +3,7 @@
 import { Create, useForm } from "@refinedev/antd";
 import { Breadcrumb, Form, Input, InputNumber, Row, Col } from "antd";
 import { BannerPreview } from "@components/BannerPreview";
+import { RequireRole } from "@components/auth/RequireRole";
 
 export default function AdvertisementTemplateCreate() {
     const { formProps, saveButtonProps } = useForm({});
@@ -12,21 +13,22 @@ export default function AdvertisementTemplateCreate() {
     const heightInRows = Form.useWatch(['heightInRows'], formProps.form);
 
     return (
-        <Create
-            title="Создать шаблон"
-            breadcrumb={
-                <Breadcrumb
-                    items={[
-                        { title: "Шаблоны рекламы", href: "/advertisement-templates" },
-                        { title: "Создать" },
-                    ]}
-                />
-            }
-            saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}
-        >
-            <Row gutter={24}>
-                <Col span={12}>
-                    <Form {...formProps} layout="vertical">
+        <RequireRole allowedRoles={["SuperAdmin", "Advertiser"]}>
+            <Create
+                title="Создать шаблон"
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { title: "Шаблоны рекламы", href: "/advertisement-templates" },
+                            { title: "Создать" },
+                        ]}
+                    />
+                }
+                saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}
+            >
+                <Row gutter={24}>
+                    <Col span={12}>
+                        <Form {...formProps} layout="vertical">
                         <Form.Item
                             label={"Название шаблона"}
                             name={["name"]}
@@ -63,17 +65,18 @@ export default function AdvertisementTemplateCreate() {
                         >
                             <InputNumber min={1} max={20} placeholder="Количество строк" />
                         </Form.Item>
-                    </Form>
-                </Col>
-                <Col span={12}>
-                    <BannerPreview
-                        name={name}
-                        widthInColumns={widthInColumns}
-                        heightInRows={heightInRows}
-                        title="Интерактивный предпросмотр"
-                    />
-                </Col>
-            </Row>
-        </Create>
+                        </Form>
+                    </Col>
+                    <Col span={12}>
+                        <BannerPreview
+                            name={name}
+                            widthInColumns={widthInColumns}
+                            heightInRows={heightInRows}
+                            title="Интерактивный предпросмотр"
+                        />
+                    </Col>
+                </Row>
+            </Create>
+        </RequireRole>
     );
 }

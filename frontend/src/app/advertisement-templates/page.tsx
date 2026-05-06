@@ -9,8 +9,10 @@ import {
 } from "@refinedev/antd";
 import { type BaseRecord } from "@refinedev/core";
 import { Space, Table, Tag } from "antd";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 export default function AdvertisementTemplateList() {
+  const { canManageAdvertisementTemplates } = useRoleAccess();
   const { tableProps} = useTable<
       {
         name: string;
@@ -36,6 +38,7 @@ export default function AdvertisementTemplateList() {
       <List
         createButtonProps={{
           children: "Создать шаблон",
+          style: { display: canManageAdvertisementTemplates ? "inline-flex" : "none" },
         }}
       >
         <Table {...tableProps} rowKey="id">
@@ -68,9 +71,13 @@ export default function AdvertisementTemplateList() {
               width={120}
               render={(_, record: BaseRecord) => (
                   <Space>
-                    <EditButton hideText size="small" recordItemId={record.id} />
+                    {canManageAdvertisementTemplates && (
+                      <EditButton hideText size="small" recordItemId={record.id} />
+                    )}
                     <ShowButton hideText size="small" recordItemId={record.id} />
-                    <DeleteButton hideText size="small" recordItemId={record.id} />
+                    {canManageAdvertisementTemplates && (
+                      <DeleteButton hideText size="small" recordItemId={record.id} />
+                    )}
                   </Space>
               )}
           />

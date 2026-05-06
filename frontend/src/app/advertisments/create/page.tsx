@@ -16,6 +16,7 @@ import {
     Typography,
 } from "antd";
 import { useState } from "react";
+import { RequireRole } from "@components/auth/RequireRole";
 
 export default function AdvertisementCreate() {
     const { formProps, saveButtonProps, form } = useForm({});
@@ -31,19 +32,20 @@ export default function AdvertisementCreate() {
     });
 
     return (
-        <Create
-            title="Создать рекламу"
-            breadcrumb={
-                <Breadcrumb
-                    items={[
-                        { title: "Реклама", href: "/advertisments" },
-                        { title: "Создать" },
-                    ]}
-                />
-            }
-            saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}
-        >
-            <Form {...formProps} layout="vertical">
+        <RequireRole allowedRoles={["SuperAdmin", "Advertiser"]}>
+            <Create
+                title="Создать рекламу"
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { title: "Реклама", href: "/advertisments" },
+                            { title: "Создать" },
+                        ]}
+                    />
+                }
+                saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}
+            >
+                <Form {...formProps} layout="vertical">
                 <Form.Item
                     label={"Название рекламы"}
                     name={["Header"]}
@@ -149,7 +151,8 @@ export default function AdvertisementCreate() {
                         format="DD.MM.YYYY"
                     />
                 </Form.Item>
-            </Form>
-        </Create>
+                </Form>
+            </Create>
+        </RequireRole>
     );
 }

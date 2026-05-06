@@ -2,6 +2,7 @@
 
 import { Create, useForm } from "@refinedev/antd";
 import { Breadcrumb, Form, Input, InputNumber, Select } from "antd";
+import { RequireRole } from "@components/auth/RequireRole";
 
 const { TextArea } = Input;
 
@@ -70,19 +71,20 @@ export default function LayoutCreate() {
     };
 
     return (
-        <Create
-            title="Создать макет"
-            breadcrumb={
-                <Breadcrumb
-                    items={[
-                        { title: "Макеты", href: "/layouts" },
-                        { title: "Создать" },
-                    ]}
-                />
-            }
-            saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}
-        >
-            <Form {...formProps} layout="vertical">
+        <RequireRole allowedRoles={["SuperAdmin", "Editor"]}>
+            <Create
+                title="Создать макет"
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { title: "Макеты", href: "/layouts" },
+                            { title: "Создать" },
+                        ]}
+                    />
+                }
+                saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}
+            >
+                <Form {...formProps} layout="vertical">
                 <Form.Item
                     label="Название макета"
                     name="name"
@@ -184,7 +186,8 @@ export default function LayoutCreate() {
                 >
                     <TextArea rows={3} placeholder='{"blocks": []}' />
                 </Form.Item>
-            </Form>
-        </Create>
+                </Form>
+            </Create>
+        </RequireRole>
     );
 }

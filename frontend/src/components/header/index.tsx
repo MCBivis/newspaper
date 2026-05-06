@@ -2,16 +2,25 @@
 
 import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
 import { useGetIdentity } from "@refinedev/core";
-import { Layout as AntdLayout, Avatar, Space, theme, Typography } from "antd";
+import {
+  Layout as AntdLayout,
+  Avatar,
+  Space,
+  theme,
+  Typography,
+} from "antd";
 import React from "react";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 const { Text } = Typography;
 const { useToken } = theme;
 
 type IUser = {
-  id: number;
-  name: string;
-  avatar: string;
+  id?: number;
+  name?: string;
+  username?: string;
+  email?: string;
+  avatar?: string;
 };
 
 export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
@@ -19,6 +28,7 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
 }) => {
   const { token } = useToken();
   const { data: user } = useGetIdentity<IUser>();
+  const { roleName } = useRoleAccess();
 
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
@@ -39,11 +49,23 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
 
   return (
     <AntdLayout.Header style={headerStyles}>
-      <Space>
-        {(user?.name || user?.avatar) && (
+      <Space size="middle">
+        {roleName && (
+          <Text type="secondary" style={{ marginRight: 8 }}>
+            Role: {roleName}
+          </Text>
+        )}
+        {(user?.name || user?.username || user?.email || user?.avatar) && (
           <Space style={{ marginLeft: "8px" }} size="middle">
-            {user?.name && <Text strong>{user.name}</Text>}
-            {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} />}
+            {(user?.name || user?.username || user?.email) && (
+              <Text strong>{user?.name || user?.username || user?.email}</Text>
+            )}
+            {user?.avatar && (
+              <Avatar
+                src={user?.avatar}
+                alt={user?.name || user?.username || user?.email}
+              />
+            )}
           </Space>
         )}
       </Space>

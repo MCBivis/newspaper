@@ -61,7 +61,6 @@ import DragDrop from 'editorjs-drag-drop';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line import/no-extraneous-dependencies
-import axios from 'axios';
 import type { EditorConfig } from '@editorjs/editorjs/types/configs';
 import MathEditor from './mathEditor';
 import SimpleImage from './simpleImage';
@@ -78,14 +77,14 @@ import LinkTool from './link/index';
 
 
 import styles from './Editor.module.scss';
-import additionalRequestHeaders from './additionalRequestHeaders';
+import Cookies from "js-cookie";
+import { API_URL, TOKEN_KEY } from "@utility/constants";
 import InlineImageTool from './inlineImage';
 import QuestionLinkTool from './QuestionLink';
 
 // eslint-disable-next-line no-console
 console.log(styles); // не удалять эту строку - она подключает стили
-export const getApiBase = () => 'http://localhost:1338';
-const useStore = () => ({authStore: {auth: {token: 'eff'}}});
+export const getApiBase = () => API_URL;
 
 interface IEditorProps {
   readOnly?: boolean,
@@ -108,7 +107,11 @@ const ContentEditor: FC<IEditorProps> = (
   const editorElementRef = useRef<HTMLDivElement>(null);
   const editorCore = React.useRef<EditorJS>(null);
   const undoInstance = React.useRef<Undo>();
-  const { authStore: { auth } } = useStore();
+  const token = Cookies.get(TOKEN_KEY);
+  const additionalRequestHeaders = React.useMemo(
+    () => ({ Authorization: token ? `Bearer ${token}` : "" }),
+    [token]
+  );
   const [isEditorReady, setIsEditorReady] = useState(false);
 
   const save = () => {
@@ -138,7 +141,7 @@ const ContentEditor: FC<IEditorProps> = (
       console.log('Editor is already initialized');
       return; // Prevent re-initialization
     }
-    // additionalRequestHeaders.Authorization = `Bearer ${auth.token}`;
+    // additionalRequestHeaders.Authorization is provided via Strapi JWT cookie
 
     // @ts-ignore
     // @ts-ignore
@@ -375,7 +378,7 @@ const ContentEditor: FC<IEditorProps> = (
     };
     //  TODO: если сюда добавить save и data перестает работать контент и тесты
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth.token, disableUndo, readOnly]);
+  }, [token, disableUndo, readOnly]);
 
   // чтобы работало на ctrl-я
   function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {

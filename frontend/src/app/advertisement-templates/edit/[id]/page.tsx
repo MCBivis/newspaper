@@ -3,6 +3,7 @@
 import { Edit, useForm } from "@refinedev/antd";
 import { Form, Input, InputNumber, Row, Col } from "antd";
 import { BannerPreview } from "@components/BannerPreview";
+import { RequireRole } from "@components/auth/RequireRole";
 
 export default function AdvertisementTemplateEdit() {
     const { formProps, saveButtonProps } = useForm({});
@@ -12,10 +13,11 @@ export default function AdvertisementTemplateEdit() {
     const heightInRows = Form.useWatch(['heightInRows'], formProps.form);
 
     return (
-        <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
-            <Row gutter={24}>
-                <Col span={12}>
-                    <Form {...formProps} layout="vertical">
+        <RequireRole allowedRoles={["SuperAdmin", "Advertiser"]}>
+            <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
+                <Row gutter={24}>
+                    <Col span={12}>
+                        <Form {...formProps} layout="vertical">
                         <Form.Item
                             label={"Название шаблона"}
                             name={["name"]}
@@ -52,17 +54,18 @@ export default function AdvertisementTemplateEdit() {
                         >
                             <InputNumber min={1} max={20} placeholder="Количество строк" />
                         </Form.Item>
-                    </Form>
-                </Col>
-                <Col span={12}>
-                    <BannerPreview
-                        name={name}
-                        widthInColumns={widthInColumns}
-                        heightInRows={heightInRows}
-                        title="Интерактивный предпросмотр баннера"
-                    />
-                </Col>
-            </Row>
-        </Edit>
+                        </Form>
+                    </Col>
+                    <Col span={12}>
+                        <BannerPreview
+                            name={name}
+                            widthInColumns={widthInColumns}
+                            heightInRows={heightInRows}
+                            title="Интерактивный предпросмотр баннера"
+                        />
+                    </Col>
+                </Row>
+            </Edit>
+        </RequireRole>
     );
 }

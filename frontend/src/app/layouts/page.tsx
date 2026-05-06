@@ -9,8 +9,10 @@ import {
 } from "@refinedev/antd";
 import { type BaseRecord } from "@refinedev/core";
 import { Space, Table } from "antd";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 export default function LayoutList() {
+  const { canManageLayouts } = useRoleAccess();
   const { tableProps} = useTable<{
     editorJSData: JSON,
     columnCount: number,
@@ -78,6 +80,7 @@ export default function LayoutList() {
       <List
         createButtonProps={{
           children: "Создать макет",
+          style: { display: canManageLayouts ? "inline-flex" : "none" },
         }}
       >
         <Table {...tableProps} rowKey="id">
@@ -95,9 +98,13 @@ export default function LayoutList() {
               dataIndex="actions"
               render={(_, record: BaseRecord) => (
                   <Space>
-                    <EditButton hideText size="small" recordItemId={record.id} />
+                    {canManageLayouts && (
+                      <EditButton hideText size="small" recordItemId={record.id} />
+                    )}
                     <ShowButton hideText size="small" recordItemId={record.id} />
-                    <DeleteButton hideText size="small" recordItemId={record.id} />
+                    {canManageLayouts && (
+                      <DeleteButton hideText size="small" recordItemId={record.id} />
+                    )}
                   </Space>
               )}
           />

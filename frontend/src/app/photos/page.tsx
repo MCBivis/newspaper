@@ -11,6 +11,7 @@ import {
 import { type BaseRecord } from "@refinedev/core";
 import MDEditor from "@uiw/react-md-editor";
 import { Space, Table } from "antd";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 const relationsQuery = {
   populate: {
@@ -32,6 +33,7 @@ type ArticleType = {
 };
 
 export default function PhotoList() {
+  const { canManagePhotos } = useRoleAccess();
   const { tableProps} = useTable<
     {
       name: string;
@@ -60,6 +62,7 @@ export default function PhotoList() {
     <List
       createButtonProps={{
         children: "Создать фотографию",
+        style: { display: canManagePhotos ? "inline-flex" : "none" },
       }}
     >
       <Table {...tableProps} rowKey="id">
@@ -147,8 +150,12 @@ export default function PhotoList() {
           render={(_, record: BaseRecord) => (
             <Space>
                 <ShowButton hideText size="small" recordItemId={record.id} />
-                <EditButton hideText size="small" recordItemId={record.id} />
-                <DeleteButton hideText size="small" recordItemId={record.id} />
+                {canManagePhotos && (
+                  <EditButton hideText size="small" recordItemId={record.id} />
+                )}
+                {canManagePhotos && (
+                  <DeleteButton hideText size="small" recordItemId={record.id} />
+                )}
             </Space>
           )}
         />

@@ -5,6 +5,7 @@ import { useTable } from "@refinedev/antd";
 import { Layout } from "antd";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { RequireRole } from "@components/auth/RequireRole";
 
 const {Content } = Layout;
 
@@ -95,19 +96,21 @@ export default function IssueShow() {
     if (!issue) return <p>Выпуск не найден</p>;
 
     return (
-        <Layout style={{ height: "100vh" }}>
-            <Layout>
-                <Content style={{ position: "relative", overflow: "auto" }}>
-                    <GridStack
-                        layoutSettings={issue.newspaper.layout as any}
-                        issueDate={issue.PublishDate}
-                        newspaperName={issue.newspaper.name}
-                        issueCover={issue.cover?.url}
-                        issueId={issue.id}
-                        issueStatus={issue.status}
-                    />
-                </Content>
+        <RequireRole allowedRoles={["SuperAdmin", "Editor"]}>
+            <Layout style={{ height: "100vh" }}>
+                <Layout>
+                    <Content style={{ position: "relative", overflow: "auto" }}>
+                        <GridStack
+                            layoutSettings={issue.newspaper.layout as any}
+                            issueDate={issue.PublishDate}
+                            newspaperName={issue.newspaper.name}
+                            issueCover={issue.cover?.url}
+                            issueId={issue.id}
+                            issueStatus={issue.status}
+                        />
+                    </Content>
+                </Layout>
             </Layout>
-        </Layout>
+        </RequireRole>
     );
 }

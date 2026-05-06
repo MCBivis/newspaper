@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 
-import { MEDIA_URL, TOKEN_KEY, STATIC_STRAPI_TOKEN } from "@utility/constants";
+import { MEDIA_URL, TOKEN_KEY } from "@utility/constants";
 import nookies from "nookies";
 
 import {
@@ -54,8 +54,8 @@ const UploadImage: FC<IProps> = memo(
 
     const [token] = useState(() => {
       const cookies = nookies.get();
-      // Prefer user auth token; fall back to public/static token for read-only uploads.
-      return cookies[TOKEN_KEY] || STATIC_STRAPI_TOKEN;
+      // Uploads require a logged-in user token.
+      return cookies[TOKEN_KEY];
     });
 
     const handleChange = useCallback(
@@ -89,12 +89,10 @@ const UploadImage: FC<IProps> = memo(
       [setFileImage, onChange]
     );
 
-    const headers = useMemo(
-      () => ({
-        authorization: `Bearer ${token}`,
-      }),
-      [token]
-    );
+    const headers = useMemo(() => {
+      if (!token) return {};
+      return { authorization: `Bearer ${token}` };
+    }, [token]);
 
     const handleUploadClick = () => {
       if ((uploadRef.current as any)?.upload?.uploader?.fileInput) {

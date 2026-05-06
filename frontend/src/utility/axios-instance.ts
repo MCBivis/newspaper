@@ -1,6 +1,6 @@
 "use client";
 
-import { API_URL, STATIC_STRAPI_TOKEN, TOKEN_KEY } from "@utility/constants";
+import { API_URL, TOKEN_KEY } from "@utility/constants";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -10,7 +10,7 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config) => {
   const cookieToken = Cookies.get(TOKEN_KEY);
-  const token = cookieToken || STATIC_STRAPI_TOKEN;
+  const token = cookieToken; // Authorization is enabled only after user login
 
   if (token && config.headers) {
     config.headers["Authorization"] = `Bearer ${token}`;

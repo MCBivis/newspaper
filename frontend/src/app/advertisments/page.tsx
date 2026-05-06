@@ -12,6 +12,7 @@ import { type BaseRecord } from "@refinedev/core";
 import { Space, Table, Tag } from "antd";
 import dayjs from "dayjs";
 import { MEDIA_URL } from "../../utility/constants";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 const relationsQuery = {
   populate: {
@@ -38,6 +39,7 @@ type PhotoType = {
 };
 
 export default function AdvertisementList() {
+  const { canManageAdvertisments } = useRoleAccess();
   const { tableProps} = useTable<
       {
         DateFrom: Date;
@@ -66,6 +68,7 @@ export default function AdvertisementList() {
       <List
         createButtonProps={{
           children: "Создать рекламу",
+          style: { display: canManageAdvertisments ? "inline-flex" : "none" },
         }}
       >
         <Table {...tableProps} rowKey="id">
@@ -128,9 +131,13 @@ export default function AdvertisementList() {
               width={120}
               render={(_, record: BaseRecord) => (
                   <Space>
-                    <EditButton hideText size="small" recordItemId={record.id} />
+                    {canManageAdvertisments && (
+                      <EditButton hideText size="small" recordItemId={record.id} />
+                    )}
                     <ShowButton hideText size="small" recordItemId={record.id} />
-                    <DeleteButton hideText size="small" recordItemId={record.id} />
+                    {canManageAdvertisments && (
+                      <DeleteButton hideText size="small" recordItemId={record.id} />
+                    )}
                   </Space>
               )}
           />

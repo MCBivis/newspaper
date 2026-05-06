@@ -8,6 +8,7 @@ import {
 } from "@refinedev/antd";
 import { Card, Col, Row, Space, Button } from "antd";
 import { useRouter } from "next/navigation";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 const relationsQuery = {
   populate: {
@@ -42,6 +43,7 @@ type IssueType = {
 const STRAPI_BASE_URL = "http://localhost:1337";
 
 export default function NewspaperList() {
+  const { canManageNewspapers } = useRoleAccess();
   const { tableProps } = useTable<{
     id: number | string;
     name: string;
@@ -76,14 +78,16 @@ export default function NewspaperList() {
       }}>
         Газеты
       </h1>
-      <Space style={{ marginBottom: 16 }}>
-        <Button
-            type="primary"
-            onClick={() => router.push("/newspapers/create")}
-        >
-          Создать газету
-        </Button>
-      </Space>
+      {canManageNewspapers && (
+        <Space style={{ marginBottom: 16 }}>
+          <Button
+              type="primary"
+              onClick={() => router.push("/newspapers/create")}
+          >
+            Создать газету
+          </Button>
+        </Space>
+      )}
       <Row gutter={[24, 24]}>
         {tableProps?.dataSource?.map((newspaper: any) => (
           <Col span={8} key={newspaper.id}>
@@ -149,11 +153,13 @@ export default function NewspaperList() {
                 Выпусков: {newspaper.issues.length}
               </p>
               <Space>
-                <EditButton
-                    hideText
-                    size="small"
-                    recordItemId={newspaper.id}
-                />
+                {canManageNewspapers && (
+                  <EditButton
+                      hideText
+                      size="small"
+                      recordItemId={newspaper.id}
+                  />
+                )}
                 <ShowButton
                     hideText
                     size="small"
@@ -162,11 +168,13 @@ export default function NewspaperList() {
                         router.push(`/issues?newspaperId=${newspaper.id}`)
                     }
                 />
-                <DeleteButton
-                  hideText
-                  size="small"
-                  recordItemId={newspaper.id}
-                />
+                {canManageNewspapers && (
+                  <DeleteButton
+                    hideText
+                    size="small"
+                    recordItemId={newspaper.id}
+                  />
+                )}
               </Space>
             </Card>
           </Col>

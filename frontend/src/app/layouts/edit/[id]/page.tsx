@@ -3,6 +3,7 @@
 import { Edit, useForm } from "@refinedev/antd";
 import { Form, Input, InputNumber, Select } from "antd";
 import dynamic from 'next/dynamic';
+import { RequireRole } from "@components/auth/RequireRole";
 
 const CodeEditor = dynamic(() => import("@/components/CodeEditor"), { ssr: false });
 
@@ -57,9 +58,10 @@ export default function LayoutEdit() {
     };
 
     return (
-        <>
-            <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
-                <Form {...formProps} layout="vertical">
+        <RequireRole allowedRoles={["SuperAdmin", "Editor"]}>
+            <>
+                <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
+                    <Form {...formProps} layout="vertical">
                     <Form.Item
                         label="Name of layout"
                         name="name"
@@ -164,8 +166,9 @@ export default function LayoutEdit() {
                             width="100%"
                         />
                     </Form.Item>
-                </Form>
-            </Edit>
-        </>
+                    </Form>
+                </Edit>
+            </>
+        </RequireRole>
     );
 }

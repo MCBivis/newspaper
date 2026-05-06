@@ -19,6 +19,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import { useEffect, useMemo, useState } from "react";
+import { RequireRole } from "@components/auth/RequireRole";
 dayjs.extend(weekday);
 dayjs.extend(localeData);
 dayjs.extend(advancedFormat);
@@ -116,8 +117,9 @@ export default function AdvertisementEdit() {
     }, [query, formProps.initialValues]);
 
     return (
-        <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
-            <Form {...formProps} layout="vertical" initialValues={initialValues}>
+        <RequireRole allowedRoles={["SuperAdmin", "Advertiser"]}>
+            <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
+                <Form {...formProps} layout="vertical" initialValues={initialValues}>
                 <Form.Item
                     label={"Название рекламы"}
                     name={["Header"]}
@@ -227,7 +229,8 @@ export default function AdvertisementEdit() {
                         format="DD.MM.YYYY"
                     />
                 </Form.Item>
-            </Form>
-        </Edit>
+                </Form>
+            </Edit>
+        </RequireRole>
     );
 }

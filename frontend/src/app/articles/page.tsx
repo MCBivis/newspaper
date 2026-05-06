@@ -12,6 +12,8 @@ import MDEditor from "@uiw/react-md-editor";
 import { API_URL } from "@utility/constants";
 import { Space, Table } from "antd";
 import qs from "qs";
+import { useRoleAccess } from "@hooks/useRoleAccess";
+import { MEDIA_URL } from "@utility/constants";
 
 const relationsQuery = {
   populate: {
@@ -52,6 +54,7 @@ const query = qs.stringify(
 );
 
 export default function ArticleList() {
+  const { canManageArticles } = useRoleAccess();
 
   const { data } = useCustom<{
     data: {
@@ -115,7 +118,7 @@ export default function ArticleList() {
           createButtonProps={{
             children: "Создать статью",
             style: {
-              display:"inline-flex",
+              display: canManageArticles ? "inline-flex" : "none",
             },
           }}
       >
@@ -147,7 +150,7 @@ export default function ArticleList() {
                     return val.photos.data.map((photo) => (
                         <img
                             key={photo.id}
-                            src={`http://127.0.0.1:1338${
+                            src={`${MEDIA_URL}${
                                 photo.attributes.photo?.data?.attributes?.url || ""
                             }`}
                             alt={photo.attributes.name}
@@ -206,8 +209,12 @@ export default function ArticleList() {
               render={(_, record: BaseRecord) => (
                   <Space>
                     <ShowButton hideText size="small" recordItemId={record.id} />
+                    {canManageArticles && (
                         <EditButton hideText size="small" recordItemId={record.id} />
+                    )}
+                    {canManageArticles && (
                         <DeleteButton hideText size="small" recordItemId={record.id} />
+                    )}
                   </Space>
               )}
           />

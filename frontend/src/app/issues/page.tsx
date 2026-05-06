@@ -10,6 +10,7 @@ import {
 import { BaseKey, BaseRecord, useUpdate} from "@refinedev/core";
 import { Space, Card, Button, Col, Row, Tag } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 const relationsQuery = {
   populate: {
@@ -47,6 +48,7 @@ type NewspaperType = {
 const STRAPI_BASE_URL = "http://localhost:1337";
 
 export default function IssueList() {
+  const { canManageIssues } = useRoleAccess();
   const searchParams = useSearchParams();
   const newspaperId = searchParams.get("newspaperId");
 
@@ -88,19 +90,22 @@ export default function IssueList() {
       <List
         createButtonProps={{
           children: "Создать выпуск",
+          style: { display: canManageIssues ? "inline-flex" : "none" },
         }}
       >
         {/* Add Create Button */}
-        <Space style={{ marginBottom: 16 }}>
-          <Button
-              type="primary"
-              onClick={() =>
-                  router.push(`/issues/create?newspaperId=${newspaperId}`)
-              }
-          >
-            Создать выпуск
-          </Button>
-        </Space>
+        {canManageIssues && (
+          <Space style={{ marginBottom: 16 }}>
+            <Button
+                type="primary"
+                onClick={() =>
+                    router.push(`/issues/create?newspaperId=${newspaperId}`)
+                }
+            >
+              Создать выпуск
+            </Button>
+          </Space>
+        )}
 
         <Row gutter={16}>
           {tableProps.dataSource?.map((record: BaseRecord) => (
@@ -134,13 +139,19 @@ export default function IssueList() {
                       backgroundColor: "#f0f0f0"
                     }}>Нет изображения</div>}
                     actions={[
-                      <EditButton
-                          hideText
-                          size="small"
-                          recordItemId={record.id}
-                          onClick={() => router.push(`/issues/edit/${record.id}`)}
-                      />,
+                      ...(canManageIssues
+                        ? [
+                            <EditButton
+                                key={`edit-${record.id}`}
+                                hideText
+                                size="small"
+                                recordItemId={record.id}
+                                onClick={() => router.push(`/issues/edit/${record.id}`)}
+                            />,
+                          ]
+                        : []),
                       <ShowButton
+                          key={`show-${record.id}`}
                           hideText
                           size="small"
                           recordItemId={record.id}
@@ -148,12 +159,17 @@ export default function IssueList() {
                               router.push(`/issues/show/${record.id}?newspaperId=${newspaperId}`)
                           }
                       />,
-                      <DeleteButton
-                        resource="issues"
-                        hideText
-                        size="small"
-                        recordItemId={record.id}
-                      />,
+                      ...(canManageIssues
+                        ? [
+                            <DeleteButton
+                              key={`delete-${record.id}`}
+                              resource="issues"
+                              hideText
+                              size="small"
+                              recordItemId={record.id}
+                            />,
+                          ]
+                        : []),
                     ]}
                 >
                   <p><strong>Дата публикации:</strong> {new Date(record.PublishDate).toLocaleDateString("ru-RU")}</p>
