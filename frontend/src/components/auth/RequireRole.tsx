@@ -24,7 +24,10 @@ export function RequireRole({ allowedRoles, children }: RequireRoleProps) {
   const { data: identity, isLoading } = useGetIdentity<any>();
 
   const roleName = extractRoleName(identity);
-  const allowed = roleName ? allowedRoles.includes(String(roleName)) : false;
+  const normalizedRole = roleName ? String(roleName).toLowerCase() : null;
+  const allowed = normalizedRole
+    ? allowedRoles.some((role) => role.toLowerCase() === normalizedRole)
+    : false;
 
   useEffect(() => {
     if (isLoading) return;

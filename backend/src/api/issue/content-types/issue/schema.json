@@ -46,6 +46,12 @@
     "issueData": {
       "type": "json"
     },
+    "tasks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::task.task",
+      "mappedBy": "issue"
+    },
     "articles": {
       "type": "relation",
       "relation": "oneToMany",

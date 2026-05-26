@@ -29,6 +29,17 @@
       "target": "api::issue.issue",
       "mappedBy": "newspaper"
     },
+    "tasks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::task.task",
+      "mappedBy": "newspaper"
+    },
+    "responsibleEditor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
     "layout": {
       "type": "relation",
       "relation": "oneToOne",

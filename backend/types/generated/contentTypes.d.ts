@@ -847,6 +847,11 @@ export interface ApiAdvertismentAdvertisment extends Schema.CollectionType {
       'api::advertisement-template.advertisement-template'
     >;
     photo: Attribute.Media<'images'>;
+    tasks: Attribute.Relation<
+      'api::advertisment.advertisment',
+      'manyToMany',
+      'api::task.task'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -881,6 +886,11 @@ export interface ApiArticleArticle extends Schema.CollectionType {
       'api::article.article',
       'oneToMany',
       'api::photo.photo'
+    >;
+    tasks: Attribute.Relation<
+      'api::article.article',
+      'manyToMany',
+      'api::task.task'
     >;
     text: Attribute.Text;
     issue: Attribute.Relation<
@@ -930,6 +940,11 @@ export interface ApiIssueIssue extends Schema.CollectionType {
       Attribute.DefaultTo<'draft'>;
     cover: Attribute.Media<'images'>;
     issueData: Attribute.JSON;
+    tasks: Attribute.Relation<
+      'api::issue.issue',
+      'oneToMany',
+      'api::task.task'
+    >;
     articles: Attribute.Relation<
       'api::issue.issue',
       'oneToMany',
@@ -1015,6 +1030,16 @@ export interface ApiNewspaperNewspaper extends Schema.CollectionType {
       'oneToMany',
       'api::issue.issue'
     >;
+    tasks: Attribute.Relation<
+      'api::newspaper.newspaper',
+      'oneToMany',
+      'api::task.task'
+    >;
+    responsibleEditor: Attribute.Relation<
+      'api::newspaper.newspaper',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
     layout: Attribute.Relation<
       'api::newspaper.newspaper',
       'oneToOne',
@@ -1053,6 +1078,11 @@ export interface ApiPhotoPhoto extends Schema.CollectionType {
     width: Attribute.Integer;
     height: Attribute.Integer;
     photo: Attribute.Media<'images'>;
+    tasks: Attribute.Relation<
+      'api::photo.photo',
+      'manyToMany',
+      'api::task.task'
+    >;
     article: Attribute.Relation<
       'api::photo.photo',
       'manyToOne',
@@ -1076,6 +1106,68 @@ export interface ApiPhotoPhoto extends Schema.CollectionType {
       'oneToOne',
       'admin::user'
     > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiTaskTask extends Schema.CollectionType {
+  collectionName: 'tasks';
+  info: {
+    singularName: 'task';
+    pluralName: 'tasks';
+    displayName: 'Task';
+    description: 'Editorial workflow task';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required;
+    description: Attribute.Text;
+    deadline: Attribute.DateTime;
+    status: Attribute.Enumeration<['todo', 'doing', 'review', 'completed']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'todo'>;
+    taskType: Attribute.Enumeration<
+      ['article', 'photo', 'advertisement', 'layout', 'other']
+    > &
+      Attribute.DefaultTo<'other'>;
+    dialogue: Attribute.JSON;
+    newspaper: Attribute.Relation<
+      'api::task.task',
+      'manyToOne',
+      'api::newspaper.newspaper'
+    >;
+    issue: Attribute.Relation<
+      'api::task.task',
+      'manyToOne',
+      'api::issue.issue'
+    >;
+    assignee: Attribute.Relation<
+      'api::task.task',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    articles: Attribute.Relation<
+      'api::task.task',
+      'manyToMany',
+      'api::article.article'
+    >;
+    photos: Attribute.Relation<
+      'api::task.task',
+      'manyToMany',
+      'api::photo.photo'
+    >;
+    advertisments: Attribute.Relation<
+      'api::task.task',
+      'manyToMany',
+      'api::advertisment.advertisment'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::task.task', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::task.task', 'oneToOne', 'admin::user'> &
       Attribute.Private;
   };
 }
@@ -1105,6 +1197,7 @@ declare module '@strapi/types' {
       'api::layout.layout': ApiLayoutLayout;
       'api::newspaper.newspaper': ApiNewspaperNewspaper;
       'api::photo.photo': ApiPhotoPhoto;
+      'api::task.task': ApiTaskTask;
     }
   }
 }

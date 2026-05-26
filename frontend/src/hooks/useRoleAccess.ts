@@ -24,11 +24,17 @@ export function useRoleAccess() {
   const isAuthor = role === "author";
   const isEditor = role === "editor";
   const isAdvertiser = role === "advertiser";
+  const canReviewTasks = isSuperAdmin || isEditor;
+  const canWorkOnTasks = isSuperAdmin || isAuthor || isIllustrator || isAdvertiser;
 
   return {
     isLoading,
     roleName,
     isSuperAdmin,
+    isIllustrator,
+    isAuthor,
+    isEditor,
+    isAdvertiser,
     canManageNewspapers: isSuperAdmin,
     canManagePhotos: isSuperAdmin || isIllustrator,
     canManageArticles: isSuperAdmin || isAuthor,
@@ -36,6 +42,12 @@ export function useRoleAccess() {
     canManageLayouts: isSuperAdmin || isEditor,
     canManageAdvertisments: isSuperAdmin || isAdvertiser,
     canManageAdvertisementTemplates: isSuperAdmin || isAdvertiser,
+    canViewTasks: isSuperAdmin || isEditor || isAuthor || isIllustrator || isAdvertiser,
+    canCreateTasks: isSuperAdmin || isEditor,
+    canReviewTasks,
+    canWorkOnTasks,
+    canManageTasks: isSuperAdmin || isEditor,
+    canViewNewspaperSummary: isSuperAdmin || isEditor,
   };
 }
 

@@ -29,6 +29,12 @@
         "images"
       ]
     },
+    "tasks": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::task.task",
+      "mappedBy": "photos"
+    },
     "article": {
       "type": "relation",
       "relation": "manyToOne",

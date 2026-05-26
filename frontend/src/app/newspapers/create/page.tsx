@@ -1,6 +1,8 @@
 "use client";
 
 import UploadImage from "@components/Upload";
+import { RequireRole } from "@components/auth/RequireRole";
+import RoleUserSelect from "@components/users/RoleUserSelect";
 import { Create, useForm, useSelect } from "@refinedev/antd";
 import { Breadcrumb, Form, Input, Select } from "antd";
 import { useState } from "react";
@@ -24,6 +26,7 @@ export default function NewspaperCreate() {
     });
 
     return (
+        <RequireRole allowedRoles={["SuperAdmin"]}>
         <Create
             title="Создать газету"
             breadcrumb={
@@ -47,6 +50,8 @@ export default function NewspaperCreate() {
                     const formattedValues = {
                         ...values,
                         photo: values.photo?.id || values.photo,
+                        responsibleEditor:
+                            values.responsibleEditor?.id || values.responsibleEditor,
                     };
 
                     console.log("Formatted values:", formattedValues);
@@ -98,7 +103,23 @@ export default function NewspaperCreate() {
                 >
                     <Select {...layoutSelectProps} placeholder="Выберите макет" />
                 </Form.Item>
+                <Form.Item
+                    label={"Ответственный редактор"}
+                    name={["responsibleEditor", "id"]}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Выберите ответственного редактора",
+                        },
+                    ]}
+                >
+                    <RoleUserSelect
+                        roles={["Editor"]}
+                        placeholder="Выберите редактора"
+                    />
+                </Form.Item>
             </Form>
         </Create>
+        </RequireRole>
     );
 }

@@ -21,6 +21,12 @@
       "target": "api::photo.photo",
       "mappedBy": "article"
     },
+    "tasks": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::task.task",
+      "mappedBy": "articles"
+    },
     "text": {
       "type": "text"
     },

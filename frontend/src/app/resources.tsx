@@ -9,6 +9,7 @@ import {
   LayoutOutlined,
   DollarOutlined,
   FileProtectOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 
 export const resources = [
@@ -67,6 +68,14 @@ export const resources = [
     edit: "/advertisement-templates/edit/:id",
     show: "/advertisement-templates/show/:id",
     meta: { label: "Шаблоны рекламы", icon: <FileProtectOutlined /> },
+  },
+  {
+    name: "tasks",
+    list: "/tasks",
+    create: "/tasks/create",
+    edit: "/tasks/edit/:id",
+    show: "/tasks/show/:id",
+    meta: { label: "Задачи", icon: <CheckSquareOutlined /> },
   },
 ] as const;
 

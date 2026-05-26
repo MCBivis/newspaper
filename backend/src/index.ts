@@ -46,8 +46,28 @@ export default {
         .map((perm) => String(perm?.action || ""))
         .filter((action) => action.startsWith("api::") || action.startsWith("plugin::upload."))
     );
+    const contentTypes = [
+      "advertisement-template.advertisement-template",
+      "advertisment.advertisment",
+      "article.article",
+      "issue.issue",
+      "layout.layout",
+      "newspaper.newspaper",
+      "photo.photo",
+      "task.task",
+    ];
+    const contentActions = ["find", "findOne", "create", "update", "delete"];
+
+    for (const contentType of contentTypes) {
+      for (const action of contentActions) {
+        allowActions.add(`api::${contentType}.${action}`);
+      }
+    }
+    allowActions.add("api::app-user.app-user.find");
     // Needed for identity request used by frontend.
     allowActions.add("plugin::users-permissions.user.me");
+    allowActions.add("plugin::users-permissions.user.find");
+    allowActions.add("plugin::users-permissions.user.findOne");
 
     for (const roleName of roleNames) {
       const [role] = await strapi.db.query(roleUID).findMany({

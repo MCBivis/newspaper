@@ -1,0 +1,86 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tasks",
+  "info": {
+    "singularName": "task",
+    "pluralName": "tasks",
+    "displayName": "Task",
+    "description": "Editorial workflow task"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "deadline": {
+      "type": "datetime"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "todo",
+        "doing",
+        "review",
+        "completed"
+      ],
+      "default": "todo",
+      "required": true
+    },
+    "taskType": {
+      "type": "enumeration",
+      "enum": [
+        "article",
+        "photo",
+        "advertisement",
+        "layout",
+        "other"
+      ],
+      "default": "other"
+    },
+    "dialogue": {
+      "type": "json"
+    },
+    "newspaper": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::newspaper.newspaper",
+      "inversedBy": "tasks"
+    },
+    "issue": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::issue.issue",
+      "inversedBy": "tasks"
+    },
+    "assignee": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article",
+      "inversedBy": "tasks"
+    },
+    "photos": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::photo.photo",
+      "inversedBy": "tasks"
+    },
+    "advertisments": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::advertisment.advertisment",
+      "inversedBy": "tasks"
+    }
+  }
+}

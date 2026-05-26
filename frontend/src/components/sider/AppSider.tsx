@@ -6,19 +6,23 @@ import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { TOKEN_KEY } from "@utility/constants";
 import { resources } from "@/app/resources";
+import { useRoleAccess } from "@hooks/useRoleAccess";
 
 const { Sider } = Layout;
 
 export function AppSider() {
   const router = useRouter();
   const pathname = usePathname() || "/";
+  const { canViewTasks, isLoading } = useRoleAccess();
 
-  const menuItems = resources.map((r) => ({
-    key: r.list,
-    icon: r.meta?.icon,
-    label: r.meta?.label ?? r.name,
-    onClick: () => router.push(r.list),
-  }));
+  const menuItems = resources
+    .filter((r) => r.name !== "tasks" || isLoading || canViewTasks)
+    .map((r) => ({
+      key: r.list,
+      icon: r.meta?.icon,
+      label: r.meta?.label ?? r.name,
+      onClick: () => router.push(r.list),
+    }));
 
   const selectedKeys = menuItems
     .map((i) => i.key)

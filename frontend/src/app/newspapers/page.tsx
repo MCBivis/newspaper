@@ -18,7 +18,11 @@ const relationsQuery = {
     layout: {
       populate: "*",
     },
+    responsibleEditor: {
+      populate: ["role"],
+    },
     photo: "*",
+    tasks: "*",
   },
 };
 
@@ -43,7 +47,7 @@ type IssueType = {
 const STRAPI_BASE_URL = "http://localhost:1337";
 
 export default function NewspaperList() {
-  const { canManageNewspapers } = useRoleAccess();
+  const { canManageNewspapers, canViewNewspaperSummary } = useRoleAccess();
   const { tableProps } = useTable<{
     id: number | string;
     name: string;
@@ -152,6 +156,14 @@ export default function NewspaperList() {
               }}>
                 Выпусков: {newspaper.issues.length}
               </p>
+              <p style={{
+                marginTop: 0,
+                marginBottom: '16px',
+                color: '#64748b',
+                fontSize: '14px'
+              }}>
+                Редактор: {newspaper.responsibleEditor?.username || "не назначен"}
+              </p>
               <Space>
                 {canManageNewspapers && (
                   <EditButton
@@ -160,14 +172,24 @@ export default function NewspaperList() {
                       recordItemId={newspaper.id}
                   />
                 )}
-                <ShowButton
+                {canViewNewspaperSummary && (
+                  <ShowButton
                     hideText
                     size="small"
                     recordItemId={newspaper.id}
                     onClick={() =>
-                        router.push(`/issues?newspaperId=${newspaper.id}`)
+                        router.push(`/newspapers/show/${newspaper.id}`)
                     }
-                />
+                  />
+                )}
+                <Button
+                  size="small"
+                  onClick={() =>
+                    router.push(`/issues?newspaperId=${newspaper.id}`)
+                  }
+                >
+                  Выпуски
+                </Button>
                 {canManageNewspapers && (
                   <DeleteButton
                     hideText

@@ -2,6 +2,8 @@
 
 import { DeleteOutlined } from "@ant-design/icons";
 import UploadImage from "@components/Upload";
+import { RequireRole } from "@components/auth/RequireRole";
+import RoleUserSelect from "@components/users/RoleUserSelect";
 import { Edit, useForm, useSelect } from "@refinedev/antd";
 import {
     Button,
@@ -21,6 +23,7 @@ export default function NewspaperEdit() {
             populate: {
                 photo: "*",
                 layout: "*",
+                responsibleEditor: "*",
             },
             fields: ["*"],
         },
@@ -40,6 +43,7 @@ export default function NewspaperEdit() {
             const data = query.data.data;
             const photoData = data.photo;
             const layoutData = data.layout;
+            const responsibleEditor = data.responsibleEditor;
 
             const photoValue = photoData
                 ? {
@@ -57,13 +61,29 @@ export default function NewspaperEdit() {
                 name: data.name,
                 photo: photoValue,
                 layout: layoutData ? { id: layoutData.id } : undefined,
+                responsibleEditor: responsibleEditor
+                    ? { id: responsibleEditor.id }
+                    : undefined,
             });
         }
     }, [query?.data?.data, form]);
 
     return (
+        <RequireRole allowedRoles={["SuperAdmin"]}>
         <Edit saveButtonProps={{ ...saveButtonProps, children: "Сохранить" }}>
-            <Form {...formProps} layout="vertical" form={form}>
+            <Form
+                {...formProps}
+                layout="vertical"
+                form={form}
+                onFinish={(values: any) => {
+                    formProps.onFinish?.({
+                        ...values,
+                        photo: values.photo?.id || values.photo,
+                        responsibleEditor:
+                            values.responsibleEditor?.id || values.responsibleEditor,
+                    });
+                }}
+            >
                 <Form.Item
                     label={"Название"}
                     name={["name"]}
@@ -86,6 +106,21 @@ export default function NewspaperEdit() {
                     ]}
                 >
                     <Select {...layoutSelectProps} placeholder="Выберите макет" />
+                </Form.Item>
+                <Form.Item
+                    label={"Ответственный редактор"}
+                    name={["responsibleEditor", "id"]}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Выберите ответственного редактора",
+                        },
+                    ]}
+                >
+                    <RoleUserSelect
+                        roles={["Editor"]}
+                        placeholder="Выберите редактора"
+                    />
                 </Form.Item>
                 <Space direction="vertical">
                     <Form.Item
@@ -131,5 +166,6 @@ export default function NewspaperEdit() {
                 </Space>
             </Form>
         </Edit>
+        </RequireRole>
     );
 }
