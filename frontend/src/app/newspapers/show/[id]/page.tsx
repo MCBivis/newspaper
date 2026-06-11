@@ -3,6 +3,7 @@
 import { EditButton, ListButton, Show } from "@refinedev/antd";
 import { useShow } from "@refinedev/core";
 import { Card, Col, Descriptions, Row, Space, Statistic, Table, Tag, Typography } from "antd";
+import { useRouter } from "next/navigation";
 import { RequireRole } from "@components/auth/RequireRole";
 import { useRoleAccess } from "@hooks/useRoleAccess";
 import type { TaskRecord, TaskStatus } from "@/types/task";
@@ -47,6 +48,7 @@ const relationsQuery = {
 };
 
 export default function NewspaperSummary() {
+  const router = useRouter();
   const { canManageNewspapers } = useRoleAccess();
   const { queryResult } = useShow<any>({
     resource: "newspapers",
@@ -100,6 +102,10 @@ export default function NewspaperSummary() {
               dataSource={tasks}
               pagination={false}
               locale={{ emptyText: "Задачи не созданы" }}
+              onRow={(task: TaskRecord) => ({
+                onClick: () => router.push(`/tasks/show/${task.id}`),
+                style: { cursor: "pointer" },
+              })}
             >
               <Table.Column title="Название" dataIndex="name" />
               <Table.Column
